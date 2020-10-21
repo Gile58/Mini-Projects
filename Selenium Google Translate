@@ -1,0 +1,61 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ConsoleApp83
+{
+    class Program
+    {
+
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            //var
+            string Sentence = "";
+            string Lang = "";
+            string newLang = "";
+            //input
+            Console.WriteLine("Write Your Sentence!");
+            Sentence = Console.ReadLine();
+            Console.WriteLine("Choose your language of the sentence!");
+            Lang = Console.ReadLine();
+            Console.WriteLine("Choose the translation language!");
+            newLang = Console.ReadLine();
+            Console.WriteLine("Starting");
+            //start
+            var driverService = ChromeDriverService.CreateDefaultService();
+            driverService.HideCommandPromptWindow = true;
+            IWebDriver driver = new ChromeDriver(driverService);
+            driver.Navigate().GoToUrl("https://translate.google.com/");
+            Wait(driver);
+            IWebElement firstArrow = driver.FindElement(By.CssSelector(".sl-more.tlid-open-source-language-list"));
+            firstArrow.Click();
+            IWebElement InputLagn1 = driver.FindElement(By.Id("sl_list-search-box"));                   
+            InputLagn1.SendKeys(Lang);
+            InputLagn1.SendKeys(Keys.Enter);
+            System.Threading.Thread.Sleep(1000);
+            Wait(driver);
+            IWebElement secondArrow = driver.FindElement(By.CssSelector(".tl-more.tlid-open-target-language-list"));
+            secondArrow.Click();
+            Wait(driver);
+            IWebElement secontBox = driver.FindElement(By.Id("tl_list-search-box"));
+            secontBox.SendKeys(newLang);
+            secontBox.SendKeys(Keys.Enter);
+            Wait(driver);
+            IWebElement box1 = driver.FindElement(By.Id("source"));
+            box1.SendKeys(Sentence);
+            Wait(driver);
+            IWebElement textAns = driver.FindElement(By.CssSelector(".tlid-translation.translation"));
+            Console.WriteLine(textAns.Text);
+            driver.Quit();
+        }
+        static void Wait(IWebDriver driver)
+        {
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+        }
+
+    }
+}
