@@ -1,0 +1,67 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using System;
+
+namespace ConsoleApp86
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            
+           
+            Console.Write("Type in your name:");
+            string ime = Console.ReadLine();
+            Console.WriteLine();
+            Console.Write("Type in your word:");
+            string f = Console.ReadLine();
+            Console.WriteLine();
+            Console.Write("Type how many repeats it would do:");
+            int x = int.Parse(Console.ReadLine());
+            IWebDriver driver = new ChromeDriver();
+            driver.Navigate().GoToUrl("https://skribbl.io/");
+        Start:
+            Wait(driver);
+            IWebElement inputName = driver.FindElement(By.Id("inputName"));
+            inputName.SendKeys(ime);        
+            IWebElement random = driver.FindElement(By.Id("buttonAvatarCustomizerRandomize"));
+            random.Click();
+            Wait(driver); 
+            IWebElement play = driver.FindElement(By.CssSelector(".btn.btn-success.btn-lg.btn-block"));
+            play.Click();
+            Wait(driver);
+            IWebElement botChat = driver.FindElement(By.Id("inputChat"));
+            back:
+            if (IsElementPresent(By.CssSelector(".btn.btn-primary.btn.-.block")))
+            {
+                IWebElement ok = driver.FindElement(By.CssSelector(".btn.btn-primary.btn.-.block"));
+                ok.Click();
+                goto back;
+            }
+            
+            for (int i = 0; i < x; i++)
+            {
+                botChat.SendKeys(f + Keys.Enter);
+                System.Threading.Thread.Sleep(1000);
+            }
+            goto Start;
+            bool IsElementPresent(By by)
+            {
+                try
+                {
+                    driver.FindElement(by);
+                    return true;
+                }
+                catch (NoSuchElementException)
+                {
+                    return false;
+                }
+            }
+        }
+        static void Wait(IWebDriver driver)
+        {
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
+        }
+    }
+}
